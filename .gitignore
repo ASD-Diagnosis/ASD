@@ -32,8 +32,9 @@ Thumbs.db
 *.tsv
 *.h5
 *.json
-*.pkl
+# *.pkl
 *.1D
 
 # Ignore folders
 ./Model/data
+./Model/features/cc200_features.pkl
