@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Load configurations from Config or environment variables
     debug_mode = Config.DEBUG
     port = Config.PORT
-    host = os.getenv("HOST", "127.0.0.1")  # Default to localhost
+    host = os.getenv("HOST", "0.0.0.0")  # Default to 0.0.0.0 for Render
 
     try:
         app.run(debug=debug_mode, host=host, port=port)
