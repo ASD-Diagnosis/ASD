@@ -32,7 +32,7 @@ Thumbs.db
 *.tsv
 *.h5
 *.json
-# *.pkl
+*.env
 *.1D
 
 # Ignore folders
