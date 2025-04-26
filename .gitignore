@@ -37,4 +37,5 @@ Thumbs.db
 
 # Ignore folders
 ./Model/data
-./Model/features/cc200_features.pkl
+./Model/features/*.pkl
+Model/features/cc200_features.pkl

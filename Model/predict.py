@@ -1,110 +1,53 @@
-# import numpy as np
-# import joblib
-# import os
-
-
-# def load_1d_file_compute_corr(file_path):
-#     try:
-#         data = np.loadtxt(file_path)
-#         if data.shape[1] != 200:
-#             raise ValueError(f"❌ Expected 200 ROIs, got {data.shape[1]}")
-#         corr = np.corrcoef(data.T)
-#         return corr[np.triu_indices(200, k=1)]  # Flatten upper triangle
-#     except Exception as e:
-#         raise ValueError(f"🚫 Failed to load or process file: {e}")
-
-
-# def predict_from_1d(file_path, model_path, pca_path):
-#     # Load and flatten correlation matrix
-#     feature = load_1d_file_compute_corr(file_path)
-
-#     # Load PCA model and transform
-#     pca = joblib.load(pca_path)
-#     feature_pca = pca.transform(np.array(feature).reshape(1, -1))
-
-#     # Load classifier and predict
-#     model = joblib.load(model_path)
-#     prediction = model.predict(feature_pca)[0]
-#     return prediction
-
-
-# def main():
-#     file_path = "./data/CC200_data/Yale_0050628_rois_cc200.1D"  # 👈 CHANGE THIS TO YOUR FILE
-#     model_path = "./models/xgboost.joblib"
-#     pca_path = "./models/pca.joblib"  # 👈 Saved in prepare_data.py (see below)
-
-#     if not os.path.exists(file_path):
-#         print(f"❌ File not found: {file_path}")
-#         return
-
-#     pred = predict_from_1d(file_path, model_path, pca_path)
-#     print(f"🧠 Predicted class: {'ASD' if pred == 1 else 'TD'}")
-
-
-# if __name__ == "__main__":
-#     main()
-
-
-
+import os, sys
 import numpy as np
 import joblib
-import os
-import sys
 from sklearn.impute import SimpleImputer
 
-
-def load_1d_file_compute_corr(file_path):
-    try:
-        data = np.loadtxt(file_path)
-        if data.shape[1] != 200:
-            raise ValueError(f"❌ Expected 200 ROIs, got {data.shape[1]}")
-        corr = np.corrcoef(data.T)
-        return corr[np.triu_indices(200, k=1)]  # Flatten upper triangle
-    except Exception as e:
-        raise ValueError(f"🚫 Failed to load or process file: {e}")
-
-
-def predict_from_1d(file_path, model_path, pca_path, scaler_path):
-    feature = load_1d_file_compute_corr(file_path)
-
-    # Handle NaN values (impute with mean)
-    imputer = SimpleImputer(strategy='mean')
-    feature_imputed = imputer.fit_transform(feature.reshape(1, -1))
-
-    # Load and apply scaler
-    scaler = joblib.load(scaler_path)
-    feature_scaled = scaler.transform(feature_imputed)
-
-    # Load and apply PCA
-    pca = joblib.load(pca_path)
-    feature_pca = pca.transform(feature_scaled)
-
-    # Load model and predict
-    model = joblib.load(model_path)
-    prediction = model.predict(feature_pca)[0]
-    prob = model.predict_proba(feature_pca)[0]
-    return prediction, prob
-
+def load_1d_file_compute_corr(fp):
+    data = np.loadtxt(fp)
+    if data.shape[1]!=200:
+        raise ValueError("Expected 200 ROIs")
+    corr = np.corrcoef(data.T)
+    return corr[np.triu_indices(200, k=1)]
 
 def main():
-    if len(sys.argv) < 2:
-        print("❌ Usage: python predict.py path/to/file.1D")
+    if len(sys.argv)!=3:
+        print("Usage: python predict.py model_name path/to/file.1D")
+        print("Example: python predict.py stack data/cc200_data/1234567_rois_cc200.1D")
         return
 
-    file_path = sys.argv[1]
-    model_path = "models/lightgbm.joblib"
-    pca_path = "models/pca.joblib"
-    scaler_path = "models/scaler.joblib"
+    model_name, file_path = sys.argv[1], sys.argv[2]
+    model_path  = f"models/{model_name}.pkl"
+    scaler_path = "models/scaler.pkl"
+    pca_path    = "models/pca.pkl"
 
     if not os.path.exists(file_path):
-        print(f"❌ File not found: {file_path}")
+        print("File not found:", file_path); return
+    if not os.path.exists(model_path):
+        print("Model not found:", model_path); return
+
+    feat = load_1d_file_compute_corr(file_path).reshape(1,-1)
+    # 1) impute NaNs
+    imp = SimpleImputer(strategy='mean')
+    feat = imp.fit_transform(feat)
+
+    if feat.shape[1] != 19900:
+        print(f"Skipping {file_path}: Expected 19900 features, got {feat.shape[1]}")
         return
 
-    pred, prob = predict_from_1d(file_path, model_path, pca_path, scaler_path)
-    label = "ASD" if pred == 1 else "TD"
-    print(f"🧠 Predicted class: {label}")
-    print(f"🔍 Confidence: ASD={prob[1]:.3f}, TD={prob[0]:.3f}")
+    # 2) scale
+    scaler = joblib.load(scaler_path)
+    feat_scaled = scaler.transform(feat)
+    # 3) PCA
+    pca = joblib.load(pca_path)
+    feat_pca = pca.transform(feat_scaled)
+    # 4) predict
+    model = joblib.load(model_path)
+    pred = model.predict(feat_pca)[0]
+    proba = model.predict_proba(feat_pca)[0]
+    label = "ASD" if pred==1 else "TD"
+    print(f"Predicted: {label}")
+    print(f"Probability → ASD: {proba[1]:.3f}, TD: {proba[0]:.3f}")
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
