@@ -26,6 +26,9 @@ def main():
 
     model_name = sys.argv[1]
     model_path = f"models/{model_name}.pkl"
+    print("\n\n===========\n")
+    print(model_path)
+    print("\n\n===========\n\n")
     try:
         model = joblib.load(model_path)
     except FileNotFoundError:
