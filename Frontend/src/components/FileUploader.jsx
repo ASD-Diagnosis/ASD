@@ -10,7 +10,7 @@ const FileUploader = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null); 
 
   const allowedFileTypes = ["image/jpeg", "image/png", "application/pdf", "text/csv"];
   const maxFileSize = 10 * 1024 * 1024; // 10MB

@@ -3,7 +3,9 @@
 export const API_ENDPOINTS = {
   // Primary autism screening prediction endpoint
   PREDICT: {
-    development: 'http://localhost:5000/predict',
+    // development: 'http://localhost:5000/predict', 
+    development: 'https://asd-5m1p.onrender.com/api/', 
+
     staging: 'https://staging-api.example.com/predict',
     production: 'https://api.autismaid.com/predict'
   },
