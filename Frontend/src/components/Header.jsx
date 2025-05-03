@@ -50,6 +50,12 @@ const Header = () => {
             >
               About
             </Link>
+            <Link
+              to="/team"
+              className="text-gray-700 dark:text-gray-200 hover:text-autism-purple dark:hover:text-autism-purple font-medium transition-colors"
+            >
+              Team
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -108,6 +114,13 @@ const Header = () => {
               onClick={toggleMenu}
             >
               About
+            </Link>
+            <Link
+              to="/team"
+              className="block text-gray-700 dark:text-gray-200 hover:text-autism-purple dark:hover:text-autism-purple font-medium"
+              onClick={toggleMenu}
+            >
+              Team
             </Link>
             {/* Mobile login button */}
             <Link

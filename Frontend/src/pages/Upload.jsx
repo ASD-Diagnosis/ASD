@@ -48,14 +48,14 @@ const Upload = () => {
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
               <li>• Images (JPEG, PNG)</li>
               <li>• Documents (PDF)</li>
-              <li>• Data Files (CSV)</li>
+              <li>• Data Files (CSV, 1D)</li>
             </ul>
           </div>
           
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Accuracy & Limitations</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-              <li>• ~90% accuracy in preliminary screening</li>
+              <li>• ~80% accuracy in preliminary screening</li>
               <li>• Best used as an initial assessment tool</li>
               <li>• Always consult healthcare professionals</li>
             </ul>

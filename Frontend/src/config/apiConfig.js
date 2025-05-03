@@ -1,31 +1,29 @@
 
 // Configuration for backend API endpoints
-export const API_ENDPOINTS = {
-  // Primary autism screening prediction endpoint
-  PREDICT: {
-    // development: 'http://localhost:5000/predict', 
-    development: 'https://asd-5m1p.onrender.com/api/', 
-
-    staging: 'https://staging-api.example.com/predict',
-    production: 'https://api.autismaid.com/predict'
-  },
+const API_BASE_URL = {
+  development: 'http://localhost:5000',
+  production: 'https://asd-5m1p.onrender.com'
+};
+// Get the appropriate API URL based on environment
+export const getApiUrl = (endpoint, environment = 'production') => {
+  const env = environment || 'production';
   
-  // Additional endpoints can be added here
-  USER_ASSESSMENT: {
-    development: 'http://localhost:5000/user-assessment',
-    staging: 'https://staging-api.example.com/user-assessment',
-    production: 'https://api.autismaid.com/user-assessment'
-  },
-  
-  // Example of additional service endpoints
-  ADDITIONAL_SERVICE: {
-    development: 'http://localhost:5000/additional-service',
-    staging: 'https://staging-api.example.com/additional-service',
-    production: 'https://api.autismaid.com/additional-service'
+  if (endpoint === 'PREDICT') {
+    return `${API_BASE_URL[env]}/api/predict`;
   }
 };
 
-// Utility to get the correct environment
-export const getApiUrl = (service, environment = 'development') => {
-  return API_ENDPOINTS[service][environment];
+// Additional API endpoints
+export const API_ENDPOINTS = {
+  USER_ASSESSMENT: {
+    development: `${API_BASE_URL.development}/user-assessment`,
+    staging: `${API_BASE_URL.staging}/user-assessment`,
+    production: `${API_BASE_URL.production}/user-assessment`
+  },
+  
+  ADDITIONAL_SERVICE: {
+    development: `${API_BASE_URL.development}/additional-service`,
+    staging: `${API_BASE_URL.staging}/additional-service`,
+    production: `${API_BASE_URL.production}/additional-service`
+  }
 };
