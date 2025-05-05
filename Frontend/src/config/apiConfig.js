@@ -2,8 +2,10 @@
 // Configuration for backend API endpoints
 const API_BASE_URL = {
   development: 'http://localhost:5000',
+  staging: 'https://staging-api.example.com',
   production: 'https://asd-5m1p.onrender.com'
 };
+
 // Get the appropriate API URL based on environment
 export const getApiUrl = (endpoint, environment = 'production') => {
   const env = environment || 'production';
@@ -11,6 +13,10 @@ export const getApiUrl = (endpoint, environment = 'production') => {
   if (endpoint === 'PREDICT') {
     return `${API_BASE_URL[env]}/api/predict`;
   }
+  
+  // For other endpoints, use the standard format
+  const endpoints = API_ENDPOINTS[endpoint];
+  return endpoints ? endpoints[env] : null;
 };
 
 // Additional API endpoints

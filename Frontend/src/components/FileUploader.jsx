@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import { Upload, File, X, CheckCircle, AlertCircle } from "lucide-react";
-import { getApiUrl } from '../config/apiConfig';
+import { getApiUrl } from "../config/apiConfig";
 import UploadProgress from "./UploadProgress";
 import { useToast } from "@/hooks/use-toast";
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
-  const [age, setAge] = useState('');
-  const [sex, setSex] = useState('');
+  const [age, setAge] = useState("");
+  const [sex, setSex] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,14 @@ const FileUploader = () => {
   const fileInputRef = useRef(null);
   const { toast } = useToast();
 
-  const allowedFileTypes = ["image/jpeg", "image/png", "application/pdf", "text/csv", "application/octet-stream", "text/plain"];
+  const allowedFileTypes = [
+    "image/jpeg",
+    "image/png",
+    "application/pdf",
+    "text/csv",
+    "application/octet-stream",
+    "text/plain",
+  ];
   const maxFileSize = 10 * 1024 * 1024; // 10MB
 
   const handleDragEnter = (e) => {
@@ -40,24 +47,19 @@ const FileUploader = () => {
   };
 
   const validateFile = (file) => {
-    const fileExtension = file.name.split('.').pop().toLowerCase();
-    
-    if (fileExtension !== "1d") {
-      toast({
-        title: "Unsupported File Type",
-        description: "Only .1D files are supported for processing.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    const fileExtension = file.name.split(".").pop().toLowerCase();
 
     if (!allowedFileTypes.includes(file.type) && fileExtension !== "1d") {
-      setError("Invalid file type. Please upload jpeg, png, pdf, csv, or 1D files.");
+      setError(
+        "Invalid file type. Please upload jpeg, png, pdf, csv, or 1D files."
+      );
       return false;
     }
 
     if (file.size > maxFileSize) {
-      setError(`File is too large. Maximum size is ${maxFileSize / (1024 * 1024)}MB.`);
+      setError(
+        `File is too large. Maximum size is ${maxFileSize / (1024 * 1024)}MB.`
+      );
       return false;
     }
 
@@ -105,15 +107,15 @@ const FileUploader = () => {
       return;
     }
 
-    if (!age) {
-      setError("Please enter the age.");
-      return;
-    }
+    // if (!age) {
+    //   setError("Please enter the age.");
+    //   return;
+    // }
 
-    if (!sex) {
-      setError("Please select the sex.");
-      return;
-    }
+    // if (!sex) {
+    //   setError("Please select the sex.");
+    //   return;
+    // }
 
     setLoading(true);
     setError("");
@@ -121,23 +123,23 @@ const FileUploader = () => {
 
     try {
       // Get API endpoint from configuration
-      const predictionUrl = getApiUrl('PREDICT');
-      
+      const predictionUrl = getApiUrl("PREDICT");
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       // formData.append('age', age);
       // formData.append('sex', sex);
 
       // Simulate upload progress
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          const newProgress = prev + (5 * Math.random());
+        setUploadProgress((prev) => {
+          const newProgress = prev + 5 * Math.random();
           return newProgress >= 95 ? 95 : newProgress;
         });
       }, 300);
 
       const response = await fetch(predictionUrl, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
@@ -145,18 +147,18 @@ const FileUploader = () => {
       setUploadProgress(100);
 
       if (!response.ok) {
-        throw new Error('Failed to process file');
+        throw new Error("Failed to process file");
       }
 
       const data = await response.json();
       const formattedResult = {
         prediction: data.prediction,
         asdProbability: data.probabilities?.ASD || 0,
-        tdProbability: data.probabilities?.TD || 0
+        tdProbability: data.probabilities?.TD || 0,
       };
-      
+
       setResult(formattedResult);
-      
+
       // Show toast notification based on result
       if (formattedResult.asdProbability > formattedResult.tdProbability) {
         toast({
@@ -186,7 +188,7 @@ const FileUploader = () => {
   return (
     <div className="w-full max-w-3xl mx-auto">
       <div className="mb-6 grid grid-cols-2 gap-4">
-        <div>
+        {/* <div>
           <label htmlFor="age" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Age (years)
           </label>
@@ -200,9 +202,12 @@ const FileUploader = () => {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:ring-autism-purple focus:border-autism-purple bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             placeholder="Enter age"
           />
-        </div>
-        <div>
-          <label htmlFor="sex" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        </div> */}
+        {/* <div>
+          <label
+            htmlFor="sex"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Sex
           </label>
           <select
@@ -215,13 +220,17 @@ const FileUploader = () => {
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       <div
         className={`border-2 border-dashed rounded-lg p-6 transition-colors
-          ${isDragging ? 'bg-autism-purple/10 border-autism-purple' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'}
-          ${file ? 'bg-gray-50 dark:bg-gray-800' : ''}
+          ${
+            isDragging
+              ? "bg-autism-purple/10 border-autism-purple"
+              : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+          }
+          ${file ? "bg-gray-50 dark:bg-gray-800" : ""}
         `}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
@@ -303,17 +312,21 @@ const FileUploader = () => {
       {loading && (
         <div className="mt-6 flex flex-col items-center space-y-4">
           <UploadProgress progress={uploadProgress} />
-          <p className="text-gray-600 dark:text-gray-400">Processing your file...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Processing your file...
+          </p>
         </div>
       )}
 
       {result && (
         <div className="mt-6">
-          <div className={`p-6 rounded-md shadow-md ${
-            result.asdProbability > result.tdProbability 
-              ? "bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30" 
-              : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30"
-          }`}>
+          <div
+            className={`p-6 rounded-md shadow-md ${
+              result.asdProbability > result.tdProbability
+                ? "bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30"
+                : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30"
+            }`}
+          >
             <div className="flex items-center mb-4">
               {result.asdProbability > result.tdProbability ? (
                 <AlertCircle className="h-6 w-6 mr-2 text-orange-500 dark:text-orange-400" />
@@ -322,49 +335,60 @@ const FileUploader = () => {
               )}
               <h3 className="text-lg font-semibold">Analysis Result</h3>
             </div>
-            
+
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Assessment</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Assessment
+                </p>
                 <p className="text-lg font-medium">
-                  {result.asdProbability > result.tdProbability 
-                    ? "⚠️ You may have signs of Autism Spectrum Disorder (ASD)" 
-                    : "✅ You are doing well. Your brain seems to be developing typically "
-                  }
+                  {result.asdProbability > result.tdProbability
+                    ? "⚠️ You may have signs of Autism Spectrum Disorder (ASD)"
+                    : "✅ You are doing well. Your brain seems to be developing typically "}
                 </p>
               </div>
-              
+
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Probabilities</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Probabilities
+                </p>
                 <div className="flex items-center mt-2">
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
-                    <div 
-                      className="h-2.5 rounded-full bg-orange-500" 
+                    <div
+                      className="h-2.5 rounded-full bg-orange-500"
                       style={{ width: `${result.asdProbability * 100}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium w-24">ASD: {(result.asdProbability * 100).toFixed(1)}%</span>
+                  <span className="text-sm font-medium w-24">
+                    ASD: {(result.asdProbability * 100).toFixed(1)}%
+                  </span>
                 </div>
                 <div className="flex items-center mt-2">
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
-                    <div 
-                      className="h-2.5 rounded-full bg-green-500" 
+                    <div
+                      className="h-2.5 rounded-full bg-green-500"
                       style={{ width: `${result.tdProbability * 100}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium w-24">TD: {(result.tdProbability * 100).toFixed(1)}%</span>
+                  <span className="text-sm font-medium w-24">
+                    TD: {(result.tdProbability * 100).toFixed(1)}%
+                  </span>
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 text-sm">
               {result.asdProbability > result.tdProbability ? (
                 <div className="space-y-2 text-gray-700 dark:text-gray-300">
                   <h4 className="font-medium">Suggestions:</h4>
                   <ul className="space-y-1 list-disc pl-5">
-                    <li>Please talk to a doctor or specialist for proper advice.</li>
+                    <li>
+                      Please talk to a doctor or specialist for proper advice.
+                    </li>
                     <li>Start learning and social activities early.</li>
-                    <li>Spend time talking and playing with others every day.</li>
+                    <li>
+                      Spend time talking and playing with others every day.
+                    </li>
                   </ul>
                 </div>
               ) : (
@@ -373,13 +397,16 @@ const FileUploader = () => {
                   <ul className="space-y-1 list-disc pl-5">
                     <li>Eat healthy food and drink water.</li>
                     <li>Play, walk, or do some fun exercise every day.</li>
-                    <li>Talk with friends and family, and try fun brain games.</li>
+                    <li>
+                      Talk with friends and family, and try fun brain games.
+                    </li>
                   </ul>
                 </div>
               )}
-              
+
               <p className="mt-4 italic text-gray-600 dark:text-gray-400">
-                <strong>Note:</strong> This is an automated screening tool and not a medical diagnosis.
+                <strong>Note:</strong> This is an automated screening tool and
+                not a medical diagnosis.
               </p>
             </div>
           </div>
