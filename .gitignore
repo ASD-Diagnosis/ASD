@@ -31,7 +31,6 @@ Thumbs.db
 *.csv
 *.tsv
 *.h5
-*.json
 *.env
 *.1D
 
