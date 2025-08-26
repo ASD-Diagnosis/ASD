@@ -10,7 +10,12 @@ DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "stack")
 
 @api.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Welcome to the ASD Diagnosis API"}), 200
+    return jsonify({
+        "message": "Welcome to the ASD Diagnosis API",
+        "Instructions:": "Please use the api/predict route to get results. Upload a file in .1D format with key=\'file\'"
+                    
+                    
+    }), 200
 
 @api.route("/predict", methods=["POST"])
 def predict():
